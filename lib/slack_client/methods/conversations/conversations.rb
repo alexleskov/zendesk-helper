@@ -28,7 +28,7 @@ module Slack
       def build_url_params
         return "" if options.empty?
 
-        "&#{build_data_by(options, "&", "=")}"
+        "&#{build_data_by(options, '&', '=')}"
       end
 
       def build_channel_param
@@ -37,7 +37,7 @@ module Slack
         "channel=#{channel_id}"
       end
 
-      def build_data_by(hashed_options, options_delimeter, values_delimeter )
+      def build_data_by(hashed_options, options_delimeter, values_delimeter)
         return unless hashed_options
 
         result = []

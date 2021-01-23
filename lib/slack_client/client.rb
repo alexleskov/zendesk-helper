@@ -3,7 +3,7 @@
 module Slack
   class Client
     HOST = $app_config.call(:slack_host)
-    CHANNELS_IDS = { support_operations: "C58EJNB6D" }
+    CHANNELS_IDS = { support_operations: "C58EJNB6D" }.freeze
 
     attr_reader :access_token, :adapter
 

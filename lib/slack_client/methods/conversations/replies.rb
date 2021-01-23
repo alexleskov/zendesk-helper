@@ -8,7 +8,7 @@ module Slack
 
         def request_url
           "#{super}#{METHOD}"
-        end  
+        end
       end
     end
   end

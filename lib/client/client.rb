@@ -29,7 +29,7 @@ module Zendesk
     def search(params, headers = {})
       Zendesk::Request::Search.new(default_request_params(headers).merge!(params))
     end
-    
+
     private
 
     def default_request_params(headers)

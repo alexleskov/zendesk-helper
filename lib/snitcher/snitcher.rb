@@ -30,27 +30,27 @@ module Zendesk
 
     def tickets_by(status, field_id)
       tickets =
-      tickets_list(status)["results"].select do |ticket_data|
-        !fetch_field_data(ticket_data["custom_fields"], field_id).empty? && ticket_data["status"] == status
-      end
+        tickets_list(status)["results"].select do |ticket_data|
+          !fetch_field_data(ticket_data["custom_fields"], field_id).empty? && ticket_data["status"] == status
+        end
       return unless tickets && !tickets.empty?
 
       tickets
     end
 
     def tickets_list(status)
-      zendesk.search(query: { type: :ticket, status: status, tags: "slack"},
+      zendesk.search(query: { type: :ticket, status: status, tags: "slack" },
                      options: { sort_by: "created_at", sort_order: "desc", per_page: Zendesk::Snitcher::PER_PAGE }).go
     end
 
     def zd_value_by(field_type, custom_fields_data)
-      field_id = 
-      case field_type
-      when :thread_ts
-        zd_thread_ts_field_id
-      when :reply_count
-        zd_reply_count_field_id
-      end
+      field_id =
+        case field_type
+        when :thread_ts
+          zd_thread_ts_field_id
+        when :reply_count
+          zd_reply_count_field_id
+        end
       data = fetch_field_data(custom_fields_data, field_id)
       return 0 if data.empty?
 

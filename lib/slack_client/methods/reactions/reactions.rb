@@ -16,7 +16,7 @@ module Slack
       end
 
       def push
-        call_api { post("#{request_url}", build_payload) }
+        call_api { post(request_url.to_s, build_payload) }
       end
 
       def request_url

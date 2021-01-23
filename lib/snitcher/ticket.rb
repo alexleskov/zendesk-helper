@@ -3,7 +3,6 @@
 module Zendesk
   class Snitcher
     class Ticket < Zendesk::Snitcher
-
       def update(options)
         tickets = super
         return unless tickets
@@ -30,7 +29,7 @@ module Zendesk
 
       def update_status(id, to_status, s_reply_count)
         zendesk.ticket(id: id, status: to_status, custom_fields: [{ "id" => zd_reply_count_field_id,
-                                                                    "value" => s_reply_count }] ).update
+                                                                    "value" => s_reply_count }]).update
       end
 
       def update_comments(id, messages)
@@ -48,7 +47,7 @@ module Zendesk
 
         messages.last["subtype"] && messages.last["subtype"] == "bot_message"
       end
-      
+
       def thread_messages_to_comments(messages)
         result = []
         messages.each do |message|

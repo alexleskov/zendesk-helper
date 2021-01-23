@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rest-client'
-gem 'singleton'
-gem 'rufus-scheduler'
 gem 'i18n'
+gem 'rest-client'
+gem 'rufus-scheduler'
+gem 'singleton'

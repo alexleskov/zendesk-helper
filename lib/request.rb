@@ -31,7 +31,7 @@ class Request
 
   protected
 
-  def call_api(&block)
+  def call_api
     response = yield
     return unless response.body
 

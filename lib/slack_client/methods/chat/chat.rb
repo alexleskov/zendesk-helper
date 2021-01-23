@@ -16,7 +16,7 @@ module Slack
       end
 
       def push
-        call_api { post("#{request_url}", build_payload) }
+        call_api { post(request_url.to_s, build_payload) }
       end
 
       def request_url
@@ -32,7 +32,7 @@ module Slack
         data["username"] = "Support Helper"
         data["icon_emoji"] = ":godmode:"
         data["mrkdwn"] = true
-        data["blocks"] = [{"type" => "section", "text" => {"type" => "mrkdwn", "text" => text.to_s}}] if text
+        data["blocks"] = [{ "type" => "section", "text" => { "type" => "mrkdwn", "text" => text.to_s } }] if text
         return if data.empty?
 
         data

@@ -18,7 +18,7 @@ module Zendesk
 
       def go
         result =
-        call_api { get(request_url) }
+          call_api { get(request_url) }
         return unless result
 
         result
@@ -33,16 +33,16 @@ module Zendesk
       def build_url_params
         return "" unless options
 
-        "&#{build_data_by(options, "&", "=")}"
+        "&#{build_data_by(options, '&', '=')}"
       end
 
       def build_url_query
         return "" unless query
 
-        "query=#{build_data_by(query, "+", '%3A')}"
+        "query=#{build_data_by(query, '+', '%3A')}"
       end
 
-      def build_data_by(hashed_options, options_delimeter, values_delimeter )
+      def build_data_by(hashed_options, options_delimeter, values_delimeter)
         return unless hashed_options
 
         result = []
