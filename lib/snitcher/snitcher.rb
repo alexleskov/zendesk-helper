@@ -10,8 +10,8 @@ module Zendesk
       @zendesk = Zendesk::Client.new
       @slack = Slack::Client.new
       @channel_id = params[:channel_id] || Slack::Client::CHANNELS_IDS[:support_operations]
-      @zd_thread_ts_field_id = params[:zd_thread_ts_field_id] || Zendesk::Client::SLACK_THREAD_TS_FIELD_ID
-      @zd_reply_count_field_id = params[:zd_reply_count_field_id] || Zendesk::Client::SLACK_REPLY_COUNT_FIELD_ID
+      @zd_thread_ts_field_id = params[:zd_thread_ts_field_id] || Zendesk::Client::SLACK_THREAD_TS_FIELD_ID.to_i
+      @zd_reply_count_field_id = params[:zd_reply_count_field_id] || Zendesk::Client::SLACK_REPLY_COUNT_FIELD_ID.to_i
     end
 
     def update(options)

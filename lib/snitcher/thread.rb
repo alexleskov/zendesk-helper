@@ -4,20 +4,21 @@ module Zendesk
   class Snitcher
     class Thread < Zendesk::Snitcher
       def update(options)
+        updated_ids = []
         tickets = super
         return unless tickets
 
         tickets.each do |ticket|
-          Thread.new do
-            zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
-            unless same_reaction_as?(reaction_by(ticket["status"]), zd_thread_ts)
-              unless ticket["status"] == "solved" && same_reaction_as?(reaction_by("pending"), zd_thread_ts)
-                notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
-              end
-              update_reaction(reaction_by(ticket["status"]), zd_thread_ts)
+          zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
+          unless same_reaction_as?(reaction_by(ticket["status"]), zd_thread_ts)
+            unless ticket["status"] == "solved" && same_reaction_as?(reaction_by("pending"), zd_thread_ts)
+              notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
             end
+            update_reaction(reaction_by(ticket["status"]), zd_thread_ts)
+            updated_ids << ticket["id"]
           end
         end
+        updated_ids
       end
 
       private

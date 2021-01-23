@@ -12,8 +12,9 @@ en:
   about_open: "The appeal has been transferred to a specialist for processing"
   about_closed: "The appeal is resolved and the ticket is closed *finally*. If you need to continue, then create a new case using the *Support* command"
   now_in_status: "now in status"
-  user: 'User'
-  message: 'Message'
+  user: "User"
+  message: "Message"
+  bot: "Bot"
 ru:
   hold: "Удержание"
   pending: "Ожидание"
@@ -23,10 +24,11 @@ ru:
   do_on_closed_ticket: "Создай новое обращение используя команду *Support*"
   on_this_thread_already_closed: "по этому треду уже закрыт"
   ticket: "Тикет"
-  about_hold: "Это означает, что решение вопроса передано третьей стороне и от техподдержки не зависит: в другой отдел или стороннее лицо.\nКак только будет получена необходимая информация, решение продолжится или будет завершено"
+  about_hold: "Это означает, что решение вопроса передано третьей стороне и от техподдержки не зависит: в другой отдел или другому ответственному лицу.\nКак только будет получена необходимая информация, решение продолжится или будет завершено"
   about_pending: "Обращение решено, но если есть еще вопросы по этому же обращению - напиши свое сообщение в этот тред, тикет снова попадет в работу"
   about_open: "Обращение передано в обработку специалисту"
   about_closed: "Обращение решено и тикет закрыт *окончательно*. Если требуется продолжение, то создай новое обращение используя команду *Support*"
   now_in_status: "теперь в статусе"
-  user: 'Пользователь'
-  message: 'Сообщение'
+  user: "Пользователь"
+  message: "Сообщение"
+  bot: "Бот"
