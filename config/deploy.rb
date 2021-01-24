@@ -17,6 +17,7 @@ append :linked_dirs, "log", "tmp"
 set :default_env, RAILS_ENV: fetch(:stage)
 
 namespace :deploy do
+=begin
   task :start_helper do
     on roles(:all) do
       execute :sudo, :monit, 'start zd_helper_schedule'
@@ -34,7 +35,8 @@ namespace :deploy do
       execute :sudo, :monit, 'restart zd_helper_schedule'
     end
   end
+=end
 end
 
-before "deploy:restart_helper"
-after "deploy:finishing", "deploy:restart_helper"
+# before "deploy:restart_helper"
+# after "deploy:finishing", "deploy:restart_helper"
