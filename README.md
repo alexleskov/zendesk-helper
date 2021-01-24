@@ -1,4 +1,4 @@
-# Zendesk Snitcher
+# Zendesk Helper
 
 Application that synchronizes tickets in Zendesk with threads in Slack.
 
@@ -7,7 +7,7 @@ Application that synchronizes tickets in Zendesk with threads in Slack.
 3. All messages that are written to the Slack thread, which is associated with a ticket to Zendesk, are saved in the Zendesk ticket as an internal note.
 
 All you need is:
-* Set up Snitcher;
+* Set up Helper;
 * Configurate sending Slack params (thread ts and thread reply count) to Zendesk ticket's custom fields;
 * Configurate scheduler and run it.
 
