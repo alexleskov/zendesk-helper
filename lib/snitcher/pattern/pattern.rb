@@ -6,8 +6,8 @@ module Zendesk
       attr_reader :tickets, :threads
       
       def initialize
-        @tickets = Zendesk::Snithcer::Ticket.new
-        @threads = Zendesk::Snithcer::Thread.new
+        @tickets = Zendesk::Snitcher::Ticket.new
+        @threads = Zendesk::Snitcher::Thread.new
       end
     end
   end
