@@ -6,7 +6,8 @@ module Zendesk
       class Default < Zendesk::Snitcher::Pattern
         def run
           Zendesk::Request::Ticket::STATUSES.keys.each do |status|
-            tickets.update(by: status.to_s, to: "open")
+            to_status = status == "new" ? "new" : "open"
+            tickets.update(by: status.to_s, to: to_status)
             threads.update(by: status.to_s)
           end
         end
