@@ -16,8 +16,10 @@ module Zendesk
           case status
           when "hold"
             "*#{I18n.t('hold')}*. #{I18n.t('about_hold')}."
-          when "pending", "solved"
-            "*#{I18n.t('pending')}/#{I18n.t('solved')}*. #{I18n.t('about_pending')}."
+          when "pending"
+            "*#{I18n.t('pending')}*. #{I18n.t('about_pending')}."
+          when "solved"
+            "*#{I18n.t('solved')}*. #{I18n.t('about_solved')}."
           when "open"
             "*#{I18n.t('open')}*. #{I18n.t('about_open')}."
           when "closed"
