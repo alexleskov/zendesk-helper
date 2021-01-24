@@ -16,9 +16,14 @@ module Zendesk
           unless reply_count_equal?(zd_reply_count, s_reply_count)
             if ticket["status"] == "closed"
               send_message(Zendesk::Text.ticket_closed(ticket["id"]), zd_thread_ts)
+              update_reply_count(ticket["id"], s_reply_count)
             else
               update_comments(ticket["id"], s_thread_messages.drop(zd_reply_count.to_i))
-              update_status(ticket["id"], options[:to], s_reply_count) unless last_reply_by_bot?(s_thread_messages)
+              if last_reply_by_bot?(s_thread_messages)
+                update_reply_count(ticket["id"], s_reply_count)
+              else
+                update_status(ticket["id"], options[:to], s_reply_count)
+              end
               updated_ids << ticket["id"]
             end
           end
@@ -31,6 +36,11 @@ module Zendesk
       def update_status(id, to_status, s_reply_count)
         zendesk.ticket(id: id, status: to_status, custom_fields: [{ "id" => zd_reply_count_field_id,
                                                                     "value" => s_reply_count }]).update
+      end
+
+      def update_reply_count(id, s_reply_count)
+        zendesk.ticket(id: id, custom_fields: [{ "id" => zd_reply_count_field_id,
+                                                 "value" => s_reply_count }]).update
       end
 
       def update_comments(id, messages)
