@@ -14,9 +14,8 @@ module Zendesk
           s_thread_messages = slack_thread(zd_thread_ts, 100)["messages"]
           s_reply_count = s_thread_messages.first["reply_count"]
           unless reply_count_equal?(zd_reply_count, s_reply_count)
-            if ticket["status"] == "closed"
+            if ticket["status"] == "closed" && !last_reply_by_bot?(s_thread_messages)
               send_message(Zendesk::Text.ticket_closed(ticket["id"]), zd_thread_ts)
-              update_reply_count(ticket["id"], s_reply_count)
             else
               update_comments(ticket["id"], s_thread_messages.drop(zd_reply_count.to_i))
               if last_reply_by_bot?(s_thread_messages)
