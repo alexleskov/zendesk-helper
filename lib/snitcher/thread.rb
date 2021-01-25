@@ -10,7 +10,7 @@ module Zendesk
 
         tickets.each do |ticket|
           zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
-          next if same_reaction_as?(reaction_by(ticket["status"]), zd_thread_ts)
+          next if !same_reaction_as?(reaction_by(ticket["status"]), zd_thread_ts)
 
           notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
           update_reaction(reaction_by(ticket["status"]), zd_thread_ts)
