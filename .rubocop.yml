@@ -21,3 +21,6 @@ Style/RegexpLiteral:
 
 Style/PerlBackrefs:
   Enabled: false
+
+Style/Next:
+  Enabled: false
