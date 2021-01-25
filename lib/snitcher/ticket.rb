@@ -14,8 +14,9 @@ module Zendesk
           s_thread_messages = slack_thread(zd_thread_ts, 100)["messages"]
           s_reply_count = s_thread_messages.first["reply_count"]
           unless reply_count_equal?(zd_reply_count, s_reply_count)
-            if ticket["status"] == "closed" && !last_reply_by_bot?(s_thread_messages)
-              send_message(Zendesk::Text.ticket_closed(ticket["id"]), zd_thread_ts)
+            case ticket["status"]
+            when "closed"
+              send_message(Zendesk::Text.ticket_closed(ticket["id"]), zd_thread_ts) if !last_reply_by_bot?(s_thread_messages)
             else
               update_comments(ticket["id"], s_thread_messages.drop(zd_reply_count.to_i))
               if last_reply_by_bot?(s_thread_messages)
@@ -38,8 +39,7 @@ module Zendesk
       end
 
       def update_reply_count(id, s_reply_count)
-        zendesk.ticket(id: id, custom_fields: [{ "id" => zd_reply_count_field_id,
-                                                 "value" => s_reply_count }]).update
+        zendesk.ticket(id: id, custom_fields: [{ "id" => zd_reply_count_field_id, "value" => s_reply_count }]).update
       end
 
       def update_comments(id, messages)
@@ -53,7 +53,7 @@ module Zendesk
       end
 
       def last_reply_by_bot?(messages)
-        return false unless messages.last && messages.last["subtype"]
+        return unless messages.last && messages.last["subtype"]
 
         messages.last["subtype"] && messages.last["subtype"] == "bot_message"
       end

@@ -10,7 +10,7 @@ module Zendesk
 
         tickets.each do |ticket|
           zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
-          if !same_reaction_as?(reaction_by(ticket["status"]), zd_thread_ts)
+          unless same_reaction_as?(reaction_by(ticket["status"]), zd_thread_ts)
             notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
             update_reaction(reaction_by(ticket["status"]), zd_thread_ts)
             updated_ids << ticket["id"]
@@ -48,7 +48,7 @@ module Zendesk
         reaction_data = find_reaction_data(slack_thread(zd_thread_ts, 1)["messages"].first["reactions"], emoji_name)
         return if reaction_data.empty?
 
-        reaction_data.first["name"]
+        !!reaction_data.first["name"]
       end
 
       def notify_thread_about_status(status, ticket_id, zd_thread_ts)
