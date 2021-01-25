@@ -16,11 +16,13 @@ module Zendesk
               #remove_reaction(bot_reaction.first["name"], zd_thread_ts)
               #set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
               #notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
+              p "BOT NO EQUAL REACTION"
               updated_ids << ticket["id"]
             end
-          else
+          elsif !bot_reaction
             #set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
             #notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
+            p "BOT NO REACTION"
             updated_ids << ticket["id"]
           end
         end
