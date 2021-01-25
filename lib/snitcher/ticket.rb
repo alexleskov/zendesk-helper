@@ -28,6 +28,7 @@ module Zendesk
             end
           end
         end
+        p "Tickets. by: #{options[:by]}, updated_ids: #{updated_ids}"
         updated_ids
       end
 
