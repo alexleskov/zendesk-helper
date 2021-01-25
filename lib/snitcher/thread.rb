@@ -25,7 +25,7 @@ module Zendesk
         return [] unless reactions_hash
 
         reactions_hash.select do |reaction_data|
-          reaction_data["name"] == emoji_name.to_s
+          reaction_data["name"] == emoji_name.to_s && reaction_data["users"].include?($app_config.call(:slack_bot_user_id).to_s)
         end
       end
 
