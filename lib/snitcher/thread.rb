@@ -13,8 +13,8 @@ module Zendesk
           bot_reaction = find_bot_reaction(zd_thread_ts)
           set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
           if bot_reaction
-            unless reaction_equal?(bot_reaction["name"], reaction_by(ticket["status"]))
-              remove_reaction(bot_reaction["name"], thread_ts)
+            unless reaction_equal?(bot_reaction.first["name"], reaction_by(ticket["status"]))
+              remove_reaction(bot_reaction.first["name"], thread_ts)
               notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
               updated_ids << ticket["id"]
             end
