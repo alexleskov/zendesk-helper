@@ -10,19 +10,18 @@ module Zendesk
 
         tickets.each do |ticket|
           zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
-          bot_reaction = find_bot_reaction(zd_thread_ts)
+          bot_reaction = find_thread_reaction(zd_thread_ts)
+          p "t_id: #{ticket["id"]}, bot_reaction: #{bot_reaction}, reaction_by_zd: #{reaction_by(ticket["status"])}"
           if bot_reaction && bot_reaction.first
             unless reaction_equal?(bot_reaction.first["name"], reaction_by(ticket["status"]))
               #remove_reaction(bot_reaction.first["name"], zd_thread_ts)
               #set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
               #notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
-              p "BOT NO EQUAL REACTION"
               updated_ids << ticket["id"]
             end
           elsif !bot_reaction
             #set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
             #notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
-            p "BOT NO REACTION"
             updated_ids << ticket["id"]
           end
         end
@@ -32,7 +31,7 @@ module Zendesk
 
       private
 
-      def find_bot_reaction(thread_ts)
+      def find_thread_reaction(thread_ts)
         reactions = slack_thread(thread_ts, 1)["messages"].first["reactions"]
         return unless reactions
 
