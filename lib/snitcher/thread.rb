@@ -11,17 +11,15 @@ module Zendesk
         tickets.each do |ticket|
           zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
           bot_reaction = find_thread_reaction(zd_thread_ts)
-          p "t_id: #{ticket["id"]}, bot_reaction: #{bot_reaction}, reaction_by_zd: #{reaction_by(ticket["status"])}"
+          set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
           if bot_reaction && bot_reaction.first
             unless reaction_equal?(bot_reaction.first["name"], reaction_by(ticket["status"]))
-              #remove_reaction(bot_reaction.first["name"], zd_thread_ts)
-              #set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
-              #notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
+              remove_reaction(bot_reaction.first["name"], zd_thread_ts)
+              notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
               updated_ids << ticket["id"]
             end
-          elsif !bot_reaction
-            #set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
-            #notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
+          else
+            notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
             updated_ids << ticket["id"]
           end
         end
