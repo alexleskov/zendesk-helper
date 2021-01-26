@@ -23,7 +23,7 @@ module Zendesk
             updated_ids << ticket["id"]
           end
         end
-        p "Threads. by: #{options[:by]}, updated_ids: #{updated_ids}"
+        # p "Threads. by: #{options[:by]}, updated_ids: #{updated_ids}"
         updated_ids
       end
 
