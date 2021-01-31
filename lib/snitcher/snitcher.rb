@@ -2,7 +2,8 @@
 
 module Zendesk
   class Snitcher
-    PER_PAGE = 100
+    TICKETS_PER_PAGE = 100
+    TICKET_SLACK_TAG = "slack"
 
     attr_reader :zendesk, :slack, :channel_id, :zd_thread_ts_field_id, :zd_reply_count_field_id
 
@@ -15,58 +16,40 @@ module Zendesk
     end
 
     def update(options)
-      tickets_by(options[:by], zd_thread_ts_field_id)
+      updated_ids = []
+      tickets = tickets_by(options[:by], zd_thread_ts_field_id)
+      return unless tickets
+
+      tickets.each do |ticket_data|
+        ticket = Zendesk::Ticket.new(ticket_data: ticket_data, thread_ts_field_id: zd_thread_ts_field_id,
+                                     reply_count_field_id: zd_reply_count_field_id)
+        thread = Slack::Thread.new(thread_data: slack_thread(ticket.thread_ts, Slack::Thread::REPLIES_LIMIT))
+        action_result = do_action(ticket, thread, options)
+        updated_ids << ticket.id if action_result
+      end
+      updated_ids
     end
 
     protected
 
-    def slack_thread(thread_ts, limit)
-      slack.conversations_replies(channel_id: channel_id, options: { limit: limit, ts: thread_ts.to_s }).go
-    end
-
-    def send_message(text, thread_ts)
-      slack.chat_post_message(text: text, channel_id: channel_id, thread_ts: thread_ts).push
-    end
-
     def tickets_by(status, field_id)
       tickets =
         tickets_list(status)["results"].select do |ticket_data|
-          !fetch_field_data(ticket_data["custom_fields"], field_id).empty? && ticket_data["status"] == status
+          ticket = Zendesk::Ticket.new(ticket_data: ticket_data)
+          !ticket.fetch_field_data(ticket.custom_fields, field_id).empty? && ticket.status == status.to_s
         end
       return unless tickets && !tickets.empty?
 
       tickets
     end
 
+    def slack_thread(thread_ts, limit)
+      slack.conversations_replies(channel_id: channel_id, options: { limit: limit, ts: thread_ts.to_s }).go
+    end
+
     def tickets_list(status)
-      zendesk.search(query: { type: :ticket, status: status, tags: "slack" },
-                     options: { sort_by: "created_at", sort_order: "desc", per_page: Zendesk::Snitcher::PER_PAGE }).go
-    end
-
-    def zd_value_by(field_type, custom_fields_data)
-      field_id =
-        case field_type
-        when :thread_ts
-          zd_thread_ts_field_id
-        when :reply_count
-          zd_reply_count_field_id
-        end
-      data = fetch_field_data(custom_fields_data, field_id)
-      return 0 if data.empty?
-
-      data.first["value"]
-    end
-
-    def fetch_field_data(fields_hash, field_id)
-      fields_hash.select do |field_data|
-        field_data["id"].to_i == field_id && value_exists?(field_data["value"])
-      end
-    end
-
-    def value_exists?(value)
-      return unless value
-
-      !value.empty?
+      zendesk.search(query: { type: :ticket, status: status, tags: Zendesk::Snitcher::TICKET_SLACK_TAG },
+                     options: { sort_by: "created_at", sort_order: "desc", per_page: Zendesk::Snitcher::TICKETS_PER_PAGE }).go
     end
   end
 end

@@ -3,62 +3,24 @@
 module Zendesk
   class Snitcher
     class Thread < Zendesk::Snitcher
-      def update(options)
-        updated_ids = []
-        tickets = super
-        return unless tickets
-
-        tickets.each do |ticket|
-          zd_thread_ts = zd_value_by(:thread_ts, ticket["custom_fields"])
-          bot_reaction = find_thread_reaction(zd_thread_ts)
-          set_reaction(reaction_by(ticket["status"]), zd_thread_ts)
-          if bot_reaction && bot_reaction.first
-            unless reaction_equal?(bot_reaction.first["name"], reaction_by(ticket["status"]))
-              remove_reaction(bot_reaction.first["name"], zd_thread_ts)
-              notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
-              updated_ids << ticket["id"]
-            end
-          else
-            notify_thread_about_status(ticket["status"], ticket["id"], zd_thread_ts)
-            updated_ids << ticket["id"]
-          end
+      def do_action(ticket, thread, options)
+        unless thread.reaction_include?(ticket.reaction_by_status)
+          actions_by(ticket, thread, options)
         end
-        # p "Threads. by: #{options[:by]}, updated_ids: #{updated_ids}"
-        updated_ids
       end
 
       private
 
-      def find_thread_reaction(thread_ts)
-        reactions = slack_thread(thread_ts, 1)["messages"].first["reactions"]
-        return unless reactions
-
-        reactions.select do |reaction|
-          reaction["users"].include?($app_config.call(:slack_bot_user_id).to_s)
+      def actions_by(ticket, thread, options)
+        on_update_params = { channel_id: channel_id, thread_ts: ticket.thread_ts.to_s }
+        if thread.reactions_by_bot && !thread.reactions_by_bot.empty?
+          on_update_params[:name] = thread.reactions_by_bot.first["name"]
+          slack.reactions_remove(on_update_params).push
         end
-      end
-
-      def reaction_equal?(current_emoji_name, new_emoji_name)
-        current_emoji_name.to_s == new_emoji_name.to_s
-      end
-
-      def reaction_by(status)
-        Zendesk::Request::Ticket::STATUSES[status]
-      end
-
-      def remove_reaction(emoji_name, thread_ts)
-        slack.reactions_remove(name: emoji_name, channel_id: channel_id, thread_ts: thread_ts).push
-      end
-
-      def set_reaction(emoji_name, thread_ts)
-        slack.reactions_add(name: emoji_name, channel_id: channel_id, thread_ts: thread_ts).push
-      end
-
-      def notify_thread_about_status(status, ticket_id, thread_ts)
-        text = Zendesk::Text.ticket_on_status(status, ticket_id)
-        return unless text
-
-        send_message(text, thread_ts)
+        on_update_params[:name] = ticket.reaction_by_status
+        slack.reactions_add(on_update_params).push
+        on_update_params[:text] = Zendesk::Text.ticket_on_status(ticket.status, ticket.id)
+        slack.chat_post_message(on_update_params).push if on_update_params[:text]
       end
     end
   end
