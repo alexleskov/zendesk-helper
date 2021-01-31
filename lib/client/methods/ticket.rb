@@ -4,8 +4,6 @@ module Zendesk
   class Request
     class Ticket < Zendesk::Request
       SOURCE = "tickets"
-      STATUSES = { "new" => "new", "open" => "rocket", "pending" => "alarm_clock", "hold" => "construction",
-                   "solved" => "white_check_mark", "closed" => "checkered_flag" }.freeze
       JSON = ".json"
 
       attr_reader :id,
@@ -54,7 +52,7 @@ module Zendesk
         data["ticket"]["priority"] = priority if priority
         data["ticket"]["custom_fields"] = custom_fields if custom_fields
         if status
-          raise "No such status '#{status}'. Avaliable: #{STATUSES.keys}" unless STATUSES.keys.include?(status)
+          raise "No such status '#{status}'. Avaliable: #{Zendesk::Ticket::STATUSES.keys}" unless Zendesk::Ticket::STATUSES.keys.include?(status)
 
           data["ticket"]["status"] = status
         end

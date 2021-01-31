@@ -37,6 +37,7 @@ Go `config/secrets.yml.sample` for sample configuration. Set up all needed param
 slack_host: 'https://yourdomain.slack.com/' # Workspace url
 slack_access_token: 'xoxb-' # Bot User OAuth Access Token (OAuth & Permissions)
 slack_token_auth_type: 'Bearer' # Default value
+slack_bot_user_id: '' # Bot id
 ```
 
 ### Zendesk
