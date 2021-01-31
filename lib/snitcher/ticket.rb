@@ -4,9 +4,7 @@ module Zendesk
   class Snitcher
     class Ticket < Zendesk::Snitcher
       def do_action(ticket, thread, options)
-        unless ticket.reply_count_equal?(thread.reply_count)
-          actions_by(ticket, thread, options)
-        end
+        actions_by(ticket, thread, options) unless ticket.reply_count_equal?(thread.reply_count)
       end
 
       private

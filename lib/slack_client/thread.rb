@@ -25,7 +25,7 @@ module Slack
     def reaction_include?(emoji_name)
       return unless reactions_by_bot
 
-      result = reactions_by_bot.select { |reaction| reaction["name"].to_s == emoji_name.to_s}
+      result = reactions_by_bot.select { |reaction| reaction["name"].to_s == emoji_name.to_s }
       return if result.empty?
 
       result
@@ -58,6 +58,5 @@ module Slack
       end
       result.join("\n")
     end
-
   end
 end

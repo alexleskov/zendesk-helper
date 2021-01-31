@@ -4,14 +4,12 @@ module Zendesk
   class Snitcher
     class Thread < Zendesk::Snitcher
       def do_action(ticket, thread, options)
-        unless thread.reaction_include?(ticket.reaction_by_status)
-          actions_by(ticket, thread, options)
-        end
+        actions_by(ticket, thread, options) unless thread.reaction_include?(ticket.reaction_by_status)
       end
 
       private
 
-      def actions_by(ticket, thread, options)
+      def actions_by(ticket, thread, _options)
         on_update_params = { channel_id: channel_id, thread_ts: ticket.thread_ts.to_s }
         if thread.reactions_by_bot && !thread.reactions_by_bot.empty?
           on_update_params[:name] = thread.reactions_by_bot.first["name"]
