@@ -42,8 +42,14 @@ class Request
     case e.http_code
     when 301, 302, 307
       e.response.follow_redirection
+    when 429
+      sleep(1)
+      retry
+    when 422
+      p "Call API Error: #{e.http_body}"
+      return
     else
-      self
+      raise "Call API Error: #{e.http_body}"
     end
   end
 
