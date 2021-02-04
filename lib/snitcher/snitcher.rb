@@ -23,7 +23,10 @@ module Zendesk
       tickets.each do |ticket_data|
         ticket = Zendesk::Ticket.new(ticket_data: ticket_data, thread_ts_field_id: zd_thread_ts_field_id,
                                      reply_count_field_id: zd_reply_count_field_id)
-        thread = Slack::Thread.new(thread_data: slack_thread(ticket.thread_ts, Slack::Thread::REPLIES_LIMIT))
+        thread_data = slack_thread(ticket.thread_ts, Slack::Thread::REPLIES_LIMIT)
+        p "ticket.id: #{ticket.id}, ticket.thread_ts: #{ticket.thread_ts}" unless thread_data.is_a?(Hash)
+        
+        thread = Slack::Thread.new(thread_data: thread_data)
         action_result = do_action(ticket, thread, options)
         updated_ids << ticket.id if action_result
       end
