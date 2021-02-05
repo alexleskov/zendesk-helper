@@ -3,7 +3,7 @@
 module Zendesk
   class Snitcher
     class Thread < Zendesk::Snitcher
-      def do_action(ticket, thread, options)
+      def do_action(ticket, thread, _options)
         actions_by(ticket, thread) unless thread.reaction_include?(ticket.reaction_by_status)
       end
 
