@@ -18,9 +18,11 @@ module Zendesk
           unless thread.messages.empty?
             zendesk.ticket(id: ticket.id, comment: thread.to_comments(drop: ticket.reply_count), public_mode: false).update
           end
-          on_update_params = { id: ticket.id, custom_fields: [{ "id" => zd_reply_count_field_id, "value" => thread.reply_count }] }
-          on_update_params[:status] = options[:to] unless thread.last_reply_by_bot?
-          zendesk.ticket(on_update_params).update
+          unless thread.last_reply_by_bot?
+            on_update_params = { id: ticket.id, custom_fields: [{ "id" => zd_reply_count_field_id, "value" => thread.reply_count }] }
+            on_update_params[:status] = options[:to]
+            zendesk.ticket(on_update_params).update
+          end
         end
       end
     end
