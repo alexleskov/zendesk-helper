@@ -46,7 +46,10 @@ module Slack
       reactions_data = messages.first["reactions"]
       return unless reactions_data
 
-      reactions_data.select { |reaction| reaction["users"].include?(bot_id.to_s) }
+      result = reactions_data.select { |reaction| reaction["users"].include?(bot_id.to_s) }
+      return if result.empty?
+
+      result
     end
 
     def convert_to_comments(messages_list)
