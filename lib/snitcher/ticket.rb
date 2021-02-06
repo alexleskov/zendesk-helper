@@ -10,7 +10,7 @@ module Zendesk
       private
 
       def actions_by(ticket, thread, options)
-        return unless thread.last_reply_by_bot?
+        return if thread.last_reply_by_bot?
 
         case ticket.status
         when "closed"
