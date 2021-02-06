@@ -24,3 +24,6 @@ Style/PerlBackrefs:
 
 Style/Next:
   Enabled: false
+
+Style/GlobalVars:
+  Enabled: false

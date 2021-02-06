@@ -6,15 +6,14 @@ module Zendesk
     SLACK_THREAD_TS_FIELD_ID = $app_config.call(:slack_thread_ts_field_id)
     SLACK_REPLY_COUNT_FIELD_ID = $app_config.call(:slack_reply_count_field_id)
 
-    attr_reader :access_token, :adapter
+    attr_reader :access_token
 
     def initialize(client_params = {})
-      @adapter ||= RestClient
-      set_access_token(client_params)
+      client_params[:adapter] ||= RestClient
+      init_access_token(client_params)
     end
 
-    def set_access_token(token_params)
-      token_params[:adapter] = adapter
+    def init_access_token(token_params)
       @access_token = Zendesk::Token.new(token_params)
     end
 
