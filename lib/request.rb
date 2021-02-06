@@ -51,6 +51,9 @@ class Request
     else
       raise "Call API Error: #{e.http_body}"
     end
+  rescue Errno::ECONNRESET => e
+    p "Errno::ECONNRESET: #{e.inspect}"
+    retry
   end
 
   def set_default_headers
