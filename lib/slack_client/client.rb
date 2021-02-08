@@ -5,10 +5,10 @@ module Slack
     HOST = $app_config.call(:slack_host)
     CHANNELS_IDS = { support_operations: "C58EJNB6D" }.freeze
 
-    attr_reader :access_token
+    attr_reader :access_token, :adapter
 
     def initialize(client_params = {})
-      client_params[:adapter] ||= RestClient
+      @adapter = client_params[:adapter] ||= RestClient
       init_access_token(client_params)
     end
 
