@@ -31,11 +31,11 @@ module Zendesk
 
     def tickets_by(status, field_id)
       tickets = []
-        tickets_list(status)["results"].each do |ticket_data|
-          ticket = Zendesk::Ticket.new(ticket_data: ticket_data, thread_ts_field_id: zd_thread_ts_field_id,
-                                       reply_count_field_id: zd_reply_count_field_id)
-          tickets << ticket if !ticket.fetch_field_data(ticket.custom_fields, field_id).empty? && ticket.status == status.to_s
-        end
+      tickets_list(status)["results"].each do |ticket_data|
+        ticket = Zendesk::Ticket.new(ticket_data: ticket_data, thread_ts_field_id: zd_thread_ts_field_id,
+                                     reply_count_field_id: zd_reply_count_field_id)
+        tickets << ticket if !ticket.fetch_field_data(ticket.custom_fields, field_id).empty? && ticket.status == status.to_s
+      end
       return if tickets.empty?
 
       tickets
