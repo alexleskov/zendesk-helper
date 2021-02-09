@@ -9,7 +9,7 @@ require './application'
 
 scheduler = Rufus::Scheduler.new
 
-scheduler.every '2m', name: "Check tickets" do |_job|
+scheduler.every '5m', name: "Check tickets" do
   Zendesk::Snitcher::Pattern::Default.new.go
 end
 

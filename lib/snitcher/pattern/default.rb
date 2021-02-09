@@ -6,9 +6,12 @@ module Zendesk
       class Default < Zendesk::Snitcher::Pattern
         def go
           Zendesk::Ticket::STATUSES.keys.each do |status|
-            to_status = status == "new" ? "new" : "open"
-            tickets.update(by: status.to_s, to: to_status)
-            threads.update(by: status.to_s)
+            p "Time: #{Time.now}, status: #{status}"
+            to_status = status.to_s == "new" ? "new" : "open"
+            tickets.update(by: status.to_s, to: to_status) # TODO: Change replies limit and update comments sending to ticket
+          end
+          Zendesk::Ticket::STATUSES.keys.each do |status|
+            threads.update(by: status.to_s, replies_limit: 1)
           end
         end
       end

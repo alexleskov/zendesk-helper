@@ -17,35 +17,35 @@ module Zendesk
 
     def update(options)
       updated_ids = []
+      replies_limit = options[:replies_limit] || Slack::Thread::REPLIES_LIMIT
       tickets = tickets_by(options[:by], zd_thread_ts_field_id)
       return unless tickets
 
-      tickets.each do |ticket_data|
-        ticket = Zendesk::Ticket.new(ticket_data: ticket_data, thread_ts_field_id: zd_thread_ts_field_id,
-                                     reply_count_field_id: zd_reply_count_field_id)
-        thread = Slack::Thread.new(thread_data: slack_thread(ticket.thread_ts, Slack::Thread::REPLIES_LIMIT))
+      tickets.each do |ticket|
+        thread = Slack::Thread.new(thread_data: slack_thread_by(ticket.thread_ts, replies_limit))
         action_result = do_action(ticket, thread, options)
         updated_ids << ticket.id if action_result
       end
       updated_ids
     end
 
-    protected
-
     def tickets_by(status, field_id)
-      tickets =
-        tickets_list(status)["results"].select do |ticket_data|
-          ticket = Zendesk::Ticket.new(ticket_data: ticket_data)
-          !ticket.fetch_field_data(ticket.custom_fields, field_id).empty? && ticket.status == status.to_s
+      tickets = []
+        tickets_list(status)["results"].each do |ticket_data|
+          ticket = Zendesk::Ticket.new(ticket_data: ticket_data, thread_ts_field_id: zd_thread_ts_field_id,
+                                       reply_count_field_id: zd_reply_count_field_id)
+          tickets << ticket if !ticket.fetch_field_data(ticket.custom_fields, field_id).empty? && ticket.status == status.to_s
         end
-      return unless tickets && !tickets.empty?
+      return if tickets.empty?
 
       tickets
     end
 
-    def slack_thread(thread_ts, limit)
+    def slack_thread_by(thread_ts, limit)
       slack.conversations_replies(channel_id: channel_id, options: { limit: limit, ts: thread_ts.to_s }).go
     end
+
+    protected
 
     def tickets_list(status)
       zendesk.search(query: { type: :ticket, status: status, tags: Zendesk::Snitcher::TICKET_SLACK_TAG },

@@ -2,6 +2,7 @@
 
 class Request
   SOURCE = ""
+  DEFAULT_TIMEOUT = 1
 
   attr_reader :client, :headers
 
@@ -43,7 +44,8 @@ class Request
     when 301, 302, 307
       e.response.follow_redirection
     when 429
-      sleep(1)
+      timeout = e.http_headers[:retry_after] || DEFAULT_TIMEOUT
+      sleep(timeout.to_i)
       retry
     when 422
       p "Call API Error: #{e.http_body}"
