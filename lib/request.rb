@@ -48,10 +48,10 @@ class Request
       sleep(timeout.to_i)
       retry
     when 422
-      p "Call API Error: #{e.http_body}"
+      p "Call API Error: #{e.http_code} - #{e.http_body}"
       return
     else
-      raise "Call API Error: #{e.http_body}"
+      raise "Call API Error: #{e.http_code} - #{e.http_body}"
     end
   rescue Errno::ECONNRESET => e
     p "Errno::ECONNRESET: #{e.inspect}"

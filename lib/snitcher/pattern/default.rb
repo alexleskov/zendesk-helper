@@ -8,7 +8,7 @@ module Zendesk
           Zendesk::Ticket::STATUSES.keys.each do |status|
             p "Tickets update. Time: #{Time.now}. Status: #{status}"
             to_status = status.to_s == "new" ? "new" : "open"
-            tickets.update(by: status.to_s, to: to_status) # TODO: Change replies limit and update comments sending to ticket
+            tickets.update(by: status.to_s, to: to_status, replies_limit: 25)
           end
           Zendesk::Ticket::STATUSES.keys.each do |status|
             p "Threads update. Time: #{Time.now}. Status: #{status}"

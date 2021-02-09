@@ -16,10 +16,14 @@ module Slack
       messages.last["subtype"] && messages.last["subtype"] == "bot_message"
     end
 
-    def to_comments(options)
-      return convert_to_comments(messages) unless options[:drop]
+    def to_comments(messages_list)
+      result = []
+      messages_list.each do |message|
+        next unless message["user"]
 
-      convert_to_comments(messages.drop(options[:drop].to_i))
+        result << Slack::Text.message(message["user"], message["text"])
+      end
+      result.join("\n")
     end
 
     def reaction_include?(emoji_name)
@@ -50,16 +54,6 @@ module Slack
       return if result.empty?
 
       result
-    end
-
-    def convert_to_comments(messages_list)
-      result = []
-      messages_list.each do |message|
-        next unless message["user"]
-
-        result << Slack::Text.message(message["user"], message["text"])
-      end
-      result.join("\n")
     end
   end
 end

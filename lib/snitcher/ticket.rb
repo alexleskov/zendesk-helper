@@ -19,7 +19,8 @@ module Zendesk
         else
           on_update_params = { id: ticket.id, custom_fields: [{ "id" => zd_reply_count_field_id, "value" => thread.reply_count }],
                                public_mode: false, status: options[:to] }
-          on_update_params[:comment] = thread.to_comments(drop: ticket.reply_count) unless thread.messages.empty?
+          comments = thread.messages.empty? ? "" : thread.to_comments(thread.messages.last(thread.reply_count.to_i - ticket.reply_count.to_i))
+          on_update_params[:comment] = comments unless comments.empty?
           zendesk.ticket(on_update_params).update
         end
       end
