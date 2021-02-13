@@ -16,6 +16,14 @@ module Slack
       messages.last["subtype"] && messages.last["subtype"] == "bot_message"
     end
 
+    def reply_count_to_comments(mode, count)
+      return "" if messages.empty? || count <= 0
+
+      raise "Don't know such mode: '#{mode}'. Use: last" unless mode.to_sym == :last
+
+      to_comments(messages.public_send(mode, count))
+    end
+
     def to_comments(messages_list)
       result = []
       messages_list.each do |message|

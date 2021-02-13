@@ -47,11 +47,11 @@ class Request
       timeout = e.http_headers[:retry_after] || DEFAULT_TIMEOUT
       sleep(timeout.to_i)
       retry
-    when 422
-      p "Call API Error: #{e.http_code} - #{e.http_body}"
+    when 422, 500, 502, 503
+      p on_api_error(e)
       return
     else
-      raise "Call API Error: #{e.http_code} - #{e.http_body}"
+      raise on_api_error(e)
     end
   rescue Errno::ECONNRESET => e
     p "Errno::ECONNRESET: #{e.inspect}"
@@ -61,5 +61,11 @@ class Request
   def set_default_headers
     @headers["Content-Type"] = "application/json; utf-8"
     @headers["Accept"] = "application/json"
+  end
+
+  private
+
+  def on_api_error(error)
+    "Call API Error: #{error.http_code} - #{error.inspect}"
   end
 end
