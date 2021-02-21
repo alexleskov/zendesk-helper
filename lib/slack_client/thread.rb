@@ -11,7 +11,7 @@ module Slack
     end
 
     def last_reply_by_bot?
-      return unless messages.last && messages.last["subtype"]
+      return unless messages && messages.last && messages.last["subtype"]
 
       messages.last["subtype"] && messages.last["subtype"] == "bot_message"
     end
