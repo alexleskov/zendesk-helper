@@ -14,7 +14,7 @@ module Zendesk
       def actions_by(ticket, thread)
         on_update_params = { channel_id: channel_id, thread_ts: ticket.thread_ts.to_s }
         if thread.reactions_by_bot
-          remove_result = slack.reactions_remove(on_update_params.merge(name: thread.reactions_by_bot.first["name"])).push
+          slack.reactions_remove(on_update_params.merge(name: thread.reactions_by_bot.first["name"])).push
         end
         add_result = slack.reactions_add(on_update_params.merge(name: ticket.reaction_by_status)).push
         on_update_params[:text] = Zendesk::Text.ticket_on_status(ticket.status, ticket.id)
