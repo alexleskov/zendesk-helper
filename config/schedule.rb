@@ -11,6 +11,8 @@ scheduler = Rufus::Scheduler.new
 
 scheduler.every '3m', name: "Check tickets" do
   Zendesk::Snitcher::Pattern::Default.new.go
+rescue RuntimeError => e
+  p "Schduler error: #{e.inspect}."
 end
 
 scheduler.join

@@ -5,6 +5,7 @@ module Zendesk
     class Thread < Zendesk::Snitcher
       def do_action(ticket, thread, _options)
         raise "Can't find reaction name by ticket status" unless ticket.reaction_by_status
+        return unless thread.messages
 
         actions_by(ticket, thread) unless thread.reaction_include?(ticket.reaction_by_status)
       end

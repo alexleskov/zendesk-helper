@@ -49,6 +49,8 @@ module Slack
       return unless thread_data
 
       @messages = thread_data["messages"]
+      return unless messages
+
       @reply_count = messages.first["reply_count"]
       @ts = messages.first["ts"]
       @reactions_by_bot = find_reactions_by_bot($app_config.call(:slack_bot_user_id))
